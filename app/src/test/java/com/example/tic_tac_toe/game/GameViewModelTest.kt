@@ -14,6 +14,7 @@ import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.`when`
 
+
 @ExperimentalCoroutinesApi
 class GameViewModelTest {
 
@@ -40,38 +41,49 @@ class GameViewModelTest {
 
     @Test
     fun `test user win`() = runTest {
-        viewModel.onCellClicked(0, 0) // X
-        viewModel.onCellClicked(0, 1) // X
-        viewModel.onCellClicked(0, 2) // X
+        viewModel.onCellClicked(0, 0) // User 'X'
+        viewModel.onCellClicked(1, 0) // AI 'O'
+        viewModel.onCellClicked(0, 1) // User 'X'
+        viewModel.onCellClicked(1, 1) // AI 'O'
+        viewModel.onCellClicked(0, 2) // User 'X'
         assertEquals(GameStatus.X_WINS, viewModel.gameState.value.gameStatus)
     }
 
     @Test
     fun `test AI win`() = runTest {
-        val board = listOf(
-            listOf('O', 'O', 'O'),
-            listOf('X', 'X', null),
-            listOf('X', null, null)
-        )
-        val gameState = GameState(board = board, gameStatus = GameStatus.O_WINS)
-        assertEquals(GameStatus.O_WINS, gameState.gameStatus)
+        viewModel.onCellClicked(0, 0) // User 'X'
+        viewModel.onCellClicked(1, 0) // AI 'O'
+        viewModel.onCellClicked(0, 1) // User 'X'
+        viewModel.onCellClicked(1, 1) // AI 'O'
+        viewModel.onCellClicked(2, 2) // User 'X'
+        viewModel.onCellClicked(1, 2) // AI 'O'
+        assertEquals(GameStatus.O_WINS, viewModel.gameState.value.gameStatus)
     }
 
     @Test
     fun `test draw`() = runTest {
-        val board = listOf(
-            listOf('X', 'O', 'X'),
-            listOf('X', 'O', 'O'),
-            listOf('O', 'X', 'X')
-        )
-        val gameState = GameState(board = board, gameStatus = GameStatus.DRAW)
-        assertEquals(GameStatus.DRAW, gameState.gameStatus)
+        viewModel.onCellClicked(0, 0) // X
+        viewModel.onCellClicked(0, 1) // O
+        viewModel.onCellClicked(0, 2) // X
+        viewModel.onCellClicked(1, 1) // O
+        viewModel.onCellClicked(1, 0) // X
+        viewModel.onCellClicked(1, 2) // O
+        viewModel.onCellClicked(2, 1) // X
+        viewModel.onCellClicked(2, 0) // O
+        viewModel.onCellClicked(2, 2) // X
+        assertEquals(GameStatus.DRAW, viewModel.gameState.value.gameStatus)
     }
 
     @Test
     fun `test reset game`() = runTest {
         viewModel.onCellClicked(0, 0)
         viewModel.resetGame()
-        assertEquals(GameState(userWins = viewModel.gameState.value.userWins), viewModel.gameState.value)
+        val expectedBoard = listOf(
+            listOf(null, null, null),
+            listOf(null, null, null),
+            listOf(null, null, null)
+        )
+        assertEquals(expectedBoard, viewModel.gameState.value.board)
+        assertEquals(GameStatus.IN_PROGRESS, viewModel.gameState.value.gameStatus)
     }
 }

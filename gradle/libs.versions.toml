@@ -12,7 +12,7 @@ lifecycleViewmodelCompose = "2.9.2"
 datastorePreferences = "1.1.1"
 coreTesting = "2.2.0"
 coroutinesTest = "1.7.3"
-mockitoCore = "5.1.1"
+mockitoCore = "5.11.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
